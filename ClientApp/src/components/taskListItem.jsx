@@ -1,4 +1,4 @@
-﻿import React, { Component } from "react";
+﻿import React from "react";
 import { apiUrl } from '../../src/config.json';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,7 +12,7 @@ function TaskListItem(props) {
         <div>
                 <ListItem style={{ 'flexDirection': 'row-reverse'}} key={props.task.id} button>
                             <ListItemAvatar>
-                        <img src={`${apiUrl}/image/${id}${fileExtension}`} width="40" />
+                        <img src={`${apiUrl}/image/${id}${fileExtension}`} width="40" alt="avatar" />
                             </ListItemAvatar>
                     <ListItemText id={id} primary={text} />
                       

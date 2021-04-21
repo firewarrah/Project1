@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { flexbox , Box } from '@material-ui/core';
+import {  Box } from '@material-ui/core';
 import CreateTask from './createTask';
 import TaskList from './taskList';
 import taskService from '../services/taskService';
@@ -14,46 +14,42 @@ export class Home extends Component {
             tasks: [],
         }
         this.handleStateChange = this.handleStateChange.bind(this);
-        this.handleServerUpdate = this.handleServerUpdate.bind(this);
+        this.handleloadTasks = this.handleloadTasks.bind(this);
   
     }
-    async handleStateChange() {
+     async handleStateChange(tasks) {
+         this.setState({ tasks: tasks });
+    }
+ 
+    async handleloadTasks() {
         try {
             const { data } = await taskService.getAllTasks();
             if (data.length > 0) {
-                console.log(data)
-                this.setState({ tasks: data });
+                await this.handleStateChange(data);
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {
-                this.setState({ errors: { cards: "No tasks to show you my" } });
+                await this.setState({ errors: { tasks: "No tasks to show" } });
             }
         }
     }
- 
 
     async componentDidMount() {
-        try {
-            const { data } = await taskService.getAllTasks();
-            if (data.length > 0) this.setState({ tasks: data });
-        } catch (err) {
-            if (err.response && err.response.status === 401) {
-                this.setState({ errors: { cards: "No tasks to show you my" } });
-            }
-        }
-
+        await this.handleloadTasks();
     }
 
-    handleServerUpdate(alltasks) {
-        this.setState({tasks: alltasks})
-    }
 
-  render () {
+
+    render() {
+
       return (
-          <Box style={{display: 'flex', 'flexDirection':'row', height:'50vh'}}>
-            <CreateTask handleStateChange={this.handleStateChange} />
-            <TaskList handleServerUpdate={this.handleServerUpdate} tasks={this.state.tasks}/>
-      </Box>
+          <>
+              <h1>Task App</h1>
+              <Box style={{ display: 'flex', 'flexDirection': 'row', height: '50vh' }}>
+                  <CreateTask handleStateChange={this.handleStateChange} />
+                  <TaskList handleStateChange={this.handleStateChange} tasks={this.state.tasks} />
+              </Box>
+              </>
     );
   }
 }

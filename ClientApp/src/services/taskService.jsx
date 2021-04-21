@@ -12,10 +12,11 @@ export function createTask(file, text) {
             'content-type': 'multipart/form-data',
         }
     }
-    return (http.post(url, formData, config), formData);
+    return (http.post(url, formData, config));
 }
 
 export function getAllTasks() {
+    
     const url = `${apiUrl}/data`;
     try {
         return http.get(url);

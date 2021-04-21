@@ -1,47 +1,55 @@
 ﻿import React, { Component } from "react";
 import taskService from '../services/taskService';
-import { Button, Paper, Typography, flexbox } from '@material-ui/core';
+import { Button, Paper, Typography, Box } from '@material-ui/core';
 import TaskListItem from '../components/taskListItem';
 
 class TaskList extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            errors: {},
-        }
-        this.loadTasks = this.loadTasks.bind(this);
+        this.onAddTasks = this.onAddTasks.bind(this);
+     
     }
 
-    async loadTasks() {
-        try {
-            const { data } = await taskService.getAllTasks();
-            if (data.length > 0) {
-                this.props.handleServerUpdate(data);
-            }
-        } catch (err) {
-           if (err.response && err.response.status === 401) {
-           this.setState({ errors: { tasks: "No tasks to show" } });
-        }
+    async onAddTasks() {
+        const tasks = await taskService.getAllTasks();
+        await this.props.handleStateChange(tasks.data);
     }
 
-}
-    render() {
-        const tasks  = this.props.tasks;
-        return (
-            <div style={{ width: '50%', display: 'flex', }}>
-                <Paper style={{ padding: 16, width: '100%',  height: '50vh', display:'flex', 'flexDirection': 'column', overflow:'auto'}} >
-                <Typography variant="h6" className="list-header">
-                    Current Tasks
+
+        render() {
+            const tasks = this.props.tasks;
+            return (
+                <div style={{ width: '50%', display: 'flex', }}>
+                    <Paper
+                        style={{
+                            padding: 16,
+                            width: '100%',
+                            height: '50vh',
+                            display: 'flex',
+                            'flexDirection': 'column',
+                            overflow: 'auto'
+                        }} >
+                        <Typography variant="h6" className="list-header">
+                            Current Tasks
           </Typography>
-                {tasks.map(task => (
-                    <TaskListItem key={task.id} task={task} />
-                ))}
-                    <Button color="primary" variant="contained" onClick={this.loadTasks} style={{
-                        'alignItems': 'flex-end', 'justifyContent': 'center', 'alignSelf': 'center', 'position': 'relative',
-                        'bottom': '6px' }}>Load All</Button>
-                </Paper>
-            </div>
-        )
+                        <Box>
+                        {tasks.map(task => (
+                            <TaskListItem key={task.id} task={task} />
+                        ))}
+                            </Box>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={this.onAddTasks}
+                            style={{
+                            'alignItems': 'flex-end', 'justifyContent': 'center', 'alignSelf': 'center' 
+                            }}>
+                            Load All
+                            </Button>
+                    </Paper>
+                </div>
+            )
+        }
     }
-}
+
 export default TaskList;

@@ -1,7 +1,10 @@
 ﻿import React, { Component } from 'react';
 import taskService from '../services/taskService';
+import TextField from '@material-ui/core/TextField';
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 
-import { Button, Input, InputLabel, FormControl, Grid, Paper, Box } from '@material-ui/core';
+import { Button, InputLabel, Paper, Container } from '@material-ui/core';
+
 class CreateTask extends Component{
     constructor(props) {
         super(props);
@@ -17,10 +20,13 @@ class CreateTask extends Component{
      async onFormSubmit(e) {
         e.preventDefault()
         const { file, text } = this.state;
-        const stcheck = await taskService.createTask(file, text);
-        this.props.handleStateChange();
-
-
+         await taskService.createTask(file, text);
+         const tasks = await taskService.getAllTasks();
+         await this.props.handleStateChange(tasks.data);
+         await this.setState({
+             file: "",
+             text: ""
+         });
     }
 
     onChange(e){
@@ -39,20 +45,34 @@ class CreateTask extends Component{
         return (
             <div style={{ width: '50%'}}>
 
-                <Paper style={{ padding: '4em', display: 'flex', 'flexDirection': 'column', height: '100%', 'justifyContent': 'end', 'alignItems':'flex-start' }}>
-                    <h1>Task App</h1>
-                    <Box style={{ 'width':'90%'}}>
-                    <form onSubmit={this.props.action} >
-                        <Grid container alignItems="center" spacing={2}>
-                            <Grid item xs={12}>
-                                <FormControl>
-                                    <InputLabel htmlFor="task-input">Type in a new task</InputLabel>
-                                    <Input id="task-input" type="text" name="text" value={this.state.text} onChange={this.onChange} required />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <label htmlFor="btn-upload">
-                                    <input
+                <Paper style={{  display: 'flex', 'flexDirection': 'column', height: '100%', 'alignItems':'center', 'justifyContent':'flex-start' }}>
+                   
+                 
+                      <Container maxWidth="sm">
+                        <form style={{'width':'100%'}}>
+  
+                           
+                              
+                                <InputLabel htmlFor="task-input">
+                                <TextField 
+                                        id="task-input"
+                                        variant="outlined"
+                                        margin="normal"
+                                        fullWidth
+                                        label="Type in a new task"
+                                        type="text"
+                                        name="text"
+                                        value={this.state.text}
+                                    onChange={this.onChange}
+                                    autoFocus
+                                        required />
+                                </InputLabel>
+                                
+                        
+                            
+                                <InputLabel htmlFor="btn-upload">
+                                <TextField
+                                
                                         id="btn-upload"
                                         name="btn-upload"
                                         style={{ display: 'none' }}
@@ -61,18 +81,21 @@ class CreateTask extends Component{
                                         onChange={this.onChange}
                                         required />
                                     <Button
-                                        className="btn-choose"
-                                        variant="outlined"
-                                        component="span" >
-                                        Choose Image
+                                    className="btn-choose"
+                                    fullWidth
+                                    variant="outlined"
+                                    component="div"
+                                    endIcon={<AddPhotoAlternateIcon ></AddPhotoAlternateIcon>}                           >
+                                    Choose Image 
                                     </Button>
-                                </label>
-                            </Grid>
 
-                                <Button className="btn-upload" color="primary" variant="contained" component="span" type="submit" onClick={this.onFormSubmit} style={{ 'alignItems': 'flex-end', 'justifyContent': 'center', 'alignSelf': 'center' }}> Add Task</Button>
-                        </Grid>
+                            </InputLabel>
+                         
+                          
+                        <Button className="btn-upload" fullWidth color="primary" variant="contained" component="span" type="submit" onClick={this.onFormSubmit} style={{ 'alignItems': 'flex-end', 'justifyContent': 'center', 'alignSelf': 'center' }}> Add Task</Button>
+                    
                         </form>
-                        </Box>
+                        </Container>
                     </Paper>
          
               </div>
