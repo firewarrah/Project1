@@ -11,6 +11,7 @@ class CreateTask extends Component{
         this.state = {
         file: "",
         text: "",
+        previewImage: undefined,
         }
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -32,7 +33,7 @@ class CreateTask extends Component{
     onChange(e){
         switch (e.target.type) {
             case 'file':
-                this.setState({ file: e.target.files[0] });
+                this.setState({ file: e.target.files[0], previewImage: URL.createObjectURL(e.target.files[0])});
                 break;
             case 'text':
                 this.setState({ text: e.target.value });
@@ -91,7 +92,12 @@ class CreateTask extends Component{
 
                             </InputLabel>
                          
-                          
+                            {this.state.previewImage && (
+                                <div style={{'display':'flex', 'justify-content':'center'}}>
+                                    <img style={{ "width": "4em", "height": "4em"}}  src={this.state.previewImage} alt="" />
+                                </div>
+                            )}
+
                         <Button className="btn-upload" fullWidth color="primary" variant="contained" component="span" type="submit" onClick={this.onFormSubmit} style={{ 'alignItems': 'flex-end', 'justifyContent': 'center', 'alignSelf': 'center' }}> Add Task</Button>
                     
                         </form>
